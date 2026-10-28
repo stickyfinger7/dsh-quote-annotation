@@ -1,0 +1,46 @@
+{
+  "id": "dsh-quote-annotation",
+  "name": "dsh-quote-annotation",
+  "version": "1.0.0",
+  "description": "Quote conversation text with optional annotations and send it to the model as structured reference context in DeepSeek Harness (DSH).",
+  "author": "stickyfinger7",
+  "license": "MIT",
+  "homepage": "https://github.com/stickyfinger7/dsh-quote-annotation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stickyfinger7/dsh-quote-annotation.git"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "quote",
+    "annotation",
+    "selection",
+    "reference",
+    "context"
+  ],
+  "engines": {
+    "node": ">=22.19.0",
+    "dsh": ">=0.2.0"
+  },
+  "entry": {
+    "host": "lib/host.js",
+    "client": "lib/client.js"
+  },
+  "exports": {
+    ".": "./lib/host.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "bundle": {
+    "patch": "./cordis.patch.yml"
+  },
+  "client": {
+    "platform": "web"
+  },
+  "contributes": {
+    "tools": [],
+    "skills": []
+  }
+}

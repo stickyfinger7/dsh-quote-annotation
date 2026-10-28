@@ -1,0 +1,10 @@
+# 对话引用批注：一个 Host 半（待引用存储 + 下一条请求注入）
+# 与一个 Client 半（选中文字工具条 + 批注弹窗 + 待引用卡片）。
+- insert:
+    - id: quote-annotation
+      name: dsh-quote-annotation
+      config:
+        maxQuotes: 8
+        quoteMaxChars: 8000
+        annotationMaxChars: 4000
+        pendingTtlMs: 86400000
