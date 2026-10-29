@@ -9,9 +9,17 @@
 
 ## 演示
 
-![划词、添加批注、发送引用，以及从行内注释跳回原文](docs/media/quote-demo.gif)
+划词 → **添加到对话** → 可选批注 → 输入框空着也能发送。回复里保留 `注释 N`：悬停预览引用，点击跳回原文。
 
-划词 → **添加到对话** → 可选批注 → 输入框空着也能发送。回复里保留 `注释 N`：悬停预览引用，点击跳回原文。英文版演示见 [这里](docs/media/quote-demo.en.gif)；分步截图见 [docs/media](docs/media)。
+**中文界面**
+
+![中文界面：划词、添加批注、发送引用、悬停「注释 1」、跳回原文](docs/media/quote-demo.gif)
+
+**English UI**
+
+![English UI: select a sentence, add a note, send the quote, hover the Note 1 marker, jump back to the source](docs/media/quote-demo.en.gif)
+
+分步截图见 [docs/media](docs/media)。
 
 ## 功能
 
