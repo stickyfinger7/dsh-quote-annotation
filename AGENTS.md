@@ -39,6 +39,12 @@ built-in `node:test` runner, so there is still no dependency to install.
 - **Never render raw context in Chat.** A separate hidden context message is the contract.
 - **Sent pill placement is DOM enhancement.** Keep it additive; do not override `conversation.chat.node` for `user`.
 - **Inline notes are idempotent DOM enhancement.** Key them by `turn:index`; never append a second marker for the same key; avoid rewriting unchanged text.
+- **UI copy lives in dictionaries.** Client strings come from `LANGUAGES` in `lib/client.js` via
+  `messages()`, and every rendered component calls `useMessages()` so a live language switch
+  re-renders it. Host strings come from `MESSAGES` in `lib/host.js` via `messagesFor(language)`.
+  Add each new string to both `zh` and `en`; every other language falls back to English.
+- **Language travels with the request.** The Client sends `x-dsh-quote-annotation-lang` on every
+  call; the Host remembers it per session so `agent/pre-step` can pick the quote-only fallback.
 - **Pending quotes are volatile.** Host restart clears them; sent records are backfilled from the log.
 - **No new dependencies.** Pure Node/browser APIs only. Tests must stay on `node:test`.
 
@@ -85,6 +91,11 @@ Client-only changes can be reloaded by the DSH client HMR when a watcher is runn
 - Marker placement is paragraph-based; there is no sentence parser. If the quote is paraphrased, the marker lands at the end of the reply.
 - Chat visibility rule for `context` nodes; changing `source.kind` can make the raw block visible.
 - `session.snapshotEvents()` is deprecated but still the only simple historical read. Keep the seq-keyed cache.
+- `<html lang>` is the language signal: DSH's locale runtime keeps it in sync with Settings. The plugin
+  observes the attribute; it does not register its own locale namespace, so it works on DSH versions
+  without `ctx.locale`.
+- `findAssistantFlow` must skip `reasoning` flows: they echo the quoted text and would otherwise win
+  the paragraph match and hide the marker inside the collapsed thinking block.
 - Quote-only messages show `（引用）` to the model; the pill is the human-visible record.
 
 ## 中文摘要
@@ -95,4 +106,7 @@ Client-only changes can be reloaded by the DSH client HMR when a watcher is runn
 - 发送后的胶囊按 `data-chat-flow-kind="user"` + `data-chat-turn` 挂到消息上方；这是 DOM 增强，不要覆盖 Chat 的 React 节点。
 - 行内 `注释 N` 只在同回合的 `turn-tail` 出现后插入助手回复，追加到引用所在段落末尾；悬停只展示引用和评论，点击滚回原文并 toast；按 `turn:index` 幂等，避免 MutationObserver 自循环。
 - Host 改动需要重启 profile；Node ESM 缓存不会因插件禁用/启用而失效。
+- 文案只有一份来源：客户端 `LANGUAGES`（所有组件都要调 `useMessages()` 订阅），Host `MESSAGES`；新增文案必须同时补 `zh` 和 `en`，其他语言回退英语。
+- 语言信号是 `<html lang>`（DSH locale 运行时维护）；插件不自建 locale namespace，因此不依赖 `ctx.locale`。
+- `findAssistantFlow` 必须跳过 `reasoning` flow，否则引用原文会命中思考块，注释标记被藏进折叠区。
 - 发版：同步改 `package.json` 和 `dsh.plugin.json` 的版本号、补 CHANGELOG、跑 check/test、打 `vX.Y.Z` tag。

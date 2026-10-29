@@ -4,6 +4,30 @@ All notable changes to this project are documented in this file. The format foll
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-29
+
+UI language support and a fixed home for inline markers.
+
+### Added
+
+- UI copy follows the DSH UI language: Chinese and English dictionaries, with English as the
+  fallback for every other language. Switching the language in Settings updates pills, cards,
+  inline markers and the composer live, without a reload.
+- Host-side copy follows the language sent by the Client: the quote-only placeholder (`（引用）` /
+  `Quote`) and the route error messages.
+- English demo GIF (`docs/media/quote-demo.en.gif`) and a Demo section in both READMEs.
+
+### Fixed
+
+- Inline notes no longer land inside the collapsed reasoning block. `findAssistantFlow` skips
+  `reasoning` flows, so the `Note N` / `注释 N` marker attaches to the visible assistant answer.
+
+### Changed
+
+- `lib/client.js` and `lib/host.js` carry one dictionary per language; no user-visible string is
+  hardcoded outside a dictionary.
+- Tests cover language normalization, localized Host copy and the language header on `POST /add`.
+
 ## [1.0.0] - 2026-10-28
 
 First public release.
@@ -31,3 +55,4 @@ First public release.
   (`INSTALL.md` removed).
 
 [1.0.0]: https://github.com/stickyfinger7/dsh-quote-annotation/releases/tag/v1.0.0
+[1.1.0]: https://github.com/stickyfinger7/dsh-quote-annotation/releases/tag/v1.1.0

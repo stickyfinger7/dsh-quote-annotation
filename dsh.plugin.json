@@ -1,7 +1,7 @@
 {
   "id": "dsh-quote-annotation",
   "name": "dsh-quote-annotation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Quote conversation text with optional annotations and send it to the model as structured reference context in DeepSeek Harness (DSH).",
   "author": "stickyfinger7",
   "license": "MIT",

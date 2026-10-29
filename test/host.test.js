@@ -11,6 +11,7 @@ const MUTATION_HEADERS = { 'content-type': 'application/json', 'x-dsh-quote-anno
 beforeEach(() => {
   t.pending.clear()
   t.sent.clear()
+  t.languages.clear()
 })
 
 /* ------------------------------------------------------------------ */
@@ -320,4 +321,69 @@ test('GET /sent works without a session store', async () => {
   const sent = await request(routes.get(ROUTES.sent), { url: `${ROUTES.sent}?sessionId=http-5` })
   assert.equal(sent.status, 200)
   assert.deepEqual(sent.json().sent, [])
+})
+
+/* ------------------------------------------------------------------ */
+/* language                                                           */
+/* ------------------------------------------------------------------ */
+
+test('normalizeLanguage maps every tag to zh or en', () => {
+  assert.equal(t.normalizeLanguage('zh-CN'), 'zh')
+  assert.equal(t.normalizeLanguage('zh'), 'zh')
+  assert.equal(t.normalizeLanguage('en-US'), 'en')
+  assert.equal(t.normalizeLanguage('ja-JP'), 'en')
+  assert.equal(t.normalizeLanguage(''), 'en')
+  assert.equal(t.normalizeLanguage(undefined), 'en')
+  assert.equal(t.normalizeLanguage(undefined, 'zh'), 'zh')
+})
+
+test('host copy follows the language sent with the mutation', () => {
+  assert.equal(t.addPending('lang-1', { text: '   ' }, CONFIG, 'en').error, 'Quote text cannot be empty.')
+  assert.equal(t.languageOf('lang-1'), 'en')
+  assert.equal(t.addPending('lang-2', { text: '   ' }, CONFIG, 'zh').error, '引用文字不能为空。')
+
+  const added = t.addPending('lang-1', { text: 'quoted', source: { nodeKey: 'n1' } }, CONFIG, 'en')
+  assert.equal(added.quotes.length, 1)
+  assert.equal(t.updatePending('lang-1', 'missing', '', CONFIG, 'en').error, 'That quote no longer exists.')
+
+  const tokenOnly = { ...USER, content: [{ type: 'text', text: '\u2063' }] }
+  const decision = t.attachToDecision({ kind: 'enter', messages: [tokenOnly] }, 'lang-1', CONFIG, 1, 1)
+  assert.deepEqual(decision.messages[0].content, [{ type: 'text', text: 'Quote' }])
+})
+
+test('stripDraftToken falls back per language', () => {
+  const message = { role: 'user', content: [{ type: 'text', text: '\u2063' }] }
+  assert.deepEqual(t.stripDraftToken(message, 'en').content, [{ type: 'text', text: 'Quote' }])
+  assert.deepEqual(t.stripDraftToken(message, 'zh').content, [{ type: 'text', text: '（引用）' }])
+  assert.deepEqual(t.stripDraftToken(message, 'ja').content, [{ type: 'text', text: 'Quote' }])
+})
+
+test('POST /add answers in the language header', async () => {
+  const routes = createHost({})
+
+  const english = await request(routes.get(ROUTES.add), {
+    method: 'POST',
+    url: ROUTES.add,
+    headers: { ...MUTATION_HEADERS, 'x-dsh-quote-annotation-lang': 'en' },
+    body: JSON.stringify({ sessionId: 'http-lang', quote: { text: '  ' } }),
+  })
+  assert.equal(english.status, 400)
+  assert.equal(english.json().error.message, 'Quote text cannot be empty.')
+
+  const chinese = await request(routes.get(ROUTES.add), {
+    method: 'POST',
+    url: ROUTES.add,
+    headers: { ...MUTATION_HEADERS, 'x-dsh-quote-annotation-lang': 'zh-CN' },
+    body: JSON.stringify({ sessionId: 'http-lang', quote: { text: '  ' } }),
+  })
+  assert.equal(chinese.status, 400)
+  assert.equal(chinese.json().error.message, '引用文字不能为空。')
+
+  const other = await request(routes.get(ROUTES.add), {
+    method: 'POST',
+    url: ROUTES.add,
+    headers: { ...MUTATION_HEADERS, 'x-dsh-quote-annotation-lang': 'ja' },
+    body: JSON.stringify({ sessionId: 'http-lang', quote: { text: '  ' } }),
+  })
+  assert.equal(other.json().error.message, 'Quote text cannot be empty.')
 })

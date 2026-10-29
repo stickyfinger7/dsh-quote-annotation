@@ -7,6 +7,12 @@ Quote a passage from a DeepSeek Harness (DSH) conversation, attach an optional n
 
 [中文](README.zh.md) · [Changelog](CHANGELOG.md) · [Maintainer notes](AGENTS.md)
 
+## Demo
+
+![Select a sentence, add an annotation, send the quote, then hover and jump back from the inline note](docs/media/quote-demo.en.gif)
+
+Select → **Add to chat** → optional note → send with the composer still empty. The reply keeps a `Note N` marker: hover to preview the quote, click to jump back to the source. The Chinese demo is [here](docs/media/quote-demo.gif); step-by-step stills live in [docs/media](docs/media).
+
 ## Features
 
 - **Select → Add to chat.** A small action bar appears over the selection; the quote is stored immediately.
@@ -17,8 +23,9 @@ Quote a passage from a DeepSeek Harness (DSH) conversation, attach an optional n
 - **Survives restarts.** Sent records are rebuilt from the Session log, so pills and markers come back after a Host restart.
 - **No editor mutation.** No Lexical chips, no hidden text, no zero-width characters left in the model prompt.
 - **Zero dependencies, no build step.** A plain ESM host plugin and a single browser module.
+- **Speaks your UI language.** Copy follows the DSH UI locale: Chinese and English ship with the plugin, and every other language falls back to English. Switching the language in Settings updates the pills, cards, markers and composer live, without a reload.
 
-> v1.0.0 UI strings are Chinese (`添加到对话`, `N 条注释`, `注释 N`).
+> UI copy is Chinese for a Chinese DSH UI (`添加到对话`, `N 条注释`, `注释 N`) and English otherwise (`Add to chat`, `N quotes`, `Note N`).
 
 ## How it works
 
@@ -44,7 +51,8 @@ selection ──► client ──► POST /dsh-quote-annotation/add
 
 ## Requirements
 
-- DSH `0.2.x` with the Web client modules (DSH Desktop or `dsh web`).
+- DSH `0.2.x` with the Web client modules (DSH Desktop or `dsh web`), including
+  `@deepseek-ai/dsh-client-locale` for the language switch.
 - A profile you can modify (`web`, `desktop`, …).
 - Node.js `>=22.19.0` for the Host.
 
@@ -59,7 +67,7 @@ dsh plugin --profile web add github:stickyfinger7/dsh-quote-annotation
 Pin a release:
 
 ```sh
-dsh plugin --profile web add github:stickyfinger7/dsh-quote-annotation#v1.0.0
+dsh plugin --profile web add github:stickyfinger7/dsh-quote-annotation#v1.1.0
 ```
 
 DSH Desktop installs into its own profile:
@@ -102,7 +110,7 @@ Defaults live in `cordis.patch.yml` and can be overridden in the profile patch u
 
 ## Compatibility
 
-Tested with DSH `0.2.0-rc.2` (Web and Desktop renderer).
+Tested with DSH `0.2.1-rc.3` (Web).
 
 Client-side selectors:
 
@@ -124,7 +132,8 @@ It deliberately does **not** depend on `conversation.draftContexts`, native Lexi
 - Sent-pill placement and inline markers are DOM enhancements: a DSH Chat DOM change may require selector updates.
 - Inline marker placement is a paragraph heuristic. If the assistant paraphrases instead of quoting, the marker lands at the end of the reply.
 - There is no native Lexical chip — that is the price of never mutating the editor.
-- UI strings are Chinese in v1.0.0.
+- UI copy covers Chinese and English only; other locales fall back to English. Host-side
+  copy follows the language of the last mutation, so a stale tab can briefly disagree.
 
 ## Development
 

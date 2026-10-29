@@ -7,6 +7,12 @@
 
 [English](README.md) · [更新日志](CHANGELOG.md) · [Agent 说明](AGENTS.md)
 
+## 演示
+
+![划词、添加批注、发送引用，以及从行内注释跳回原文](docs/media/quote-demo.gif)
+
+划词 → **添加到对话** → 可选批注 → 输入框空着也能发送。回复里保留 `注释 N`：悬停预览引用，点击跳回原文。英文版演示见 [这里](docs/media/quote-demo.en.gif)；分步截图见 [docs/media](docs/media)。
+
 ## 功能
 
 - **选中 → 添加到对话**：选区上方出现操作条，点了就存下，没有多余弹窗。
@@ -17,8 +23,9 @@
 - **重启不丢**：发送记录从 Session 日志回填，Host 重启后胶囊和标记仍在。
 - **不改编辑器**：不插 Lexical chip，不写隐藏文本，不把零宽字符留给模型。
 - **零依赖、无构建**：Host 是普通 ESM，客户端是单个浏览器模块。
+- **跟随界面语言**：文案跟着 DSH 的界面语言走，内置中文和英文；其他语言一律回退英语。在设置里切换语言，胶囊、卡片、行内标记和输入框立即跟着变，不用刷新。
 
-> v1.0.0 界面文案为中文（`添加到对话`、`N 条注释`、`注释 N`）。
+> 中文界面显示 `添加到对话`、`N 条注释`、`注释 N`；其他界面显示 `Add to chat`、`N quotes`、`Note N`。
 
 ## 工作方式
 
@@ -44,7 +51,8 @@
 
 ## 环境要求
 
-- DSH `0.2.x`，带 Web 客户端模块（DSH Desktop 或 `dsh web`）。
+- DSH `0.2.x`，带 Web 客户端模块（DSH Desktop 或 `dsh web`），并包含
+  `@deepseek-ai/dsh-client-locale`（语言切换）。
 - 一个可以修改的 profile（`web`、`desktop` 等）。
 - Host 侧 Node.js `>=22.19.0`。
 
@@ -59,7 +67,7 @@ dsh plugin --profile web add github:stickyfinger7/dsh-quote-annotation
 固定到某个发布版本：
 
 ```sh
-dsh plugin --profile web add github:stickyfinger7/dsh-quote-annotation#v1.0.0
+dsh plugin --profile web add github:stickyfinger7/dsh-quote-annotation#v1.1.0
 ```
 
 DSH Desktop 装进它自己的 profile：
@@ -102,7 +110,7 @@ dsh plugin --profile web add ./dsh-quote-annotation
 
 ## 兼容性
 
-已在 DSH `0.2.0-rc.2`（Web 与 Desktop 渲染层）测试。
+已在 DSH `0.2.1-rc.3`（Web）上测试。
 
 客户端依赖的选择器：
 
@@ -124,7 +132,7 @@ Host 侧契约：
 - 发送胶囊和行内标记都是 DOM 增强：DSH Chat DOM 变化时可能需要更新选择器。
 - 行内标记是段落级启发式。助手转述而不是提到原文时，标记会落在回复末尾。
 - 没有原生 Lexical chip——这是"绝不改编辑器"的代价。
-- v1.0.0 界面文案只有中文。
+- 界面文案只有中文和英文两套，其他语言回退英语。Host 侧文案跟随最近一次请求的语言。
 
 ## 开发
 
