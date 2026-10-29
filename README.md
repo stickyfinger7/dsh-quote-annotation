@@ -9,17 +9,9 @@ Quote a passage from a DeepSeek Harness (DSH) conversation, attach an optional n
 
 ## Demo
 
-Select → **Add to chat** → optional note → send with the composer still empty. The reply keeps a `Note N` marker: hover to preview the quote, click to jump back to the source.
+![Select a sentence, add an annotation, send the quote, then hover and jump back from the inline note](docs/media/quote-demo.en.gif)
 
-**English UI**
-
-![English UI: select a sentence, add a note, send the quote, hover the Note 1 marker, jump back to the source](docs/media/quote-demo.en.gif)
-
-**中文界面**
-
-![中文界面：划词、添加批注、发送引用、悬停「注释 1」、跳回原文](docs/media/quote-demo.gif)
-
-Step-by-step stills live in [docs/media](docs/media).
+Select → **Add to chat** → optional note → send with the composer still empty. The reply keeps a `Note N` marker: hover to preview the quote, click to jump back to the source. The Chinese demo is [here](docs/media/quote-demo.gif); step-by-step stills live in [docs/media](docs/media).
 
 ## Features
 
